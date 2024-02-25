@@ -11,4 +11,7 @@ class Course(models.Model):
     end_date = models.DateField(default = timezone.now().date())
     active = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.name
+
     

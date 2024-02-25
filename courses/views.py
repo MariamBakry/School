@@ -18,27 +18,27 @@ class GetCourseView(APIView):
         serializer = CourseSerializer(course)
         return Response(serializer.data)
     
-class CreateCourseView(APIView):
-    def post(self, request):
-        serializer = CourseSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+# class CreateCourseView(APIView):
+#     def post(self, request):
+#         serializer = CourseSerializer(data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors)
     
-class UpdateCourseView(APIView):
-    def put(self, request, course_id):
-        course = get_object_or_404(Course, pk=course_id)
-        serializer = CourseSerializer(course, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
+# class UpdateCourseView(APIView):
+#     def put(self, request, course_id):
+#         course = get_object_or_404(Course, pk=course_id)
+#         serializer = CourseSerializer(course, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors)
 
     
-class DeleteCourseView(APIView):
-    def delete(self, request, course_id):
-        course = get_object_or_404(Course, pk=course_id)
-        course.delete()
-        return Response({'message': 'Course deleted successfully'})
+# class DeleteCourseView(APIView):
+#     def delete(self, request, course_id):
+#         course = get_object_or_404(Course, pk=course_id)
+#         course.delete()
+#         return Response({'message': 'Course deleted successfully'})
     
