@@ -2,6 +2,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from .models import *
 from .serializers import *
@@ -36,14 +37,14 @@ class LogoutView(APIView):
 
     
 class RetrieveUserProfileView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = CustomUserSerializer
 
     def get_object(self):
         return self.request.user
     
 class UpdateUserProfileView(generics.UpdateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = UpdateProfileSerializer
 
     def get_object(self):

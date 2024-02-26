@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'teachers.apps.TeachersConfig',
     'students.apps.StudentsConfig',
+    'enrollments.apps.EnrollmentsConfig',
     'rest_framework',
 ]
 

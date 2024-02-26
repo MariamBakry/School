@@ -5,7 +5,7 @@ from teachers.models import Teacher
 # Create your models here.
 
 class Course(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     teacher = models.ForeignKey(Teacher, null=True, blank=True, on_delete=models.SET_NULL)
     description = models.TextField(blank=True)
     start_date = models.DateField(default = timezone.now().date())
