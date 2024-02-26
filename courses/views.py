@@ -7,12 +7,16 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 # Create your views here.
 
 class CourseListView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         courses = Course.objects.all()
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
     
 class GetCourseView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, course_id):
         course = get_object_or_404(Course ,pk=course_id)
         serializer = CourseSerializer(course)
