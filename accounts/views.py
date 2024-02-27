@@ -49,3 +49,12 @@ class UpdateUserProfileView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class Signup(APIView):
+    def match_passwords(self,validated_data):
+        password = validated_data.pop('password')
+        password2 = validated_data.pop('password2')
+
+        if password != password2:
+            raise serializers.ValidationError("Passwords do not match")
+        return password

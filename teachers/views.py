@@ -30,15 +30,8 @@ class StudentsEnrollMyCourseView(APIView):
             course = get_object_or_404(Course, pk=course_id)
             if course.teacher == teacher:
                 enrollments = Enrollment.objects.filter(course=course_id)
-                students = []
-                for enrollment in enrollments:
-                    students.append(enrollment.student)
-                all_students = Student.objects.filter(pk__in=students)
-                all_users = []
-
-                for student in all_students:
-                    all_users.append(student.user.pk)
-                all_users = CustomUser.objects.filter(pk__in=all_users)
+                student_user_pks = enrollments.values_list('student__user_id', flat=True)
+                all_users = CustomUser.objects.filter(pk__in=student_user_pks)
 
                 paginator = self.pagination_class()
                 paginated_students = paginator.paginate_queryset(all_users, request)

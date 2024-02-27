@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Student
 from accounts.models import CustomUser
 from accounts.serializers import CustomUserSerializer
+from accounts.views import Signup
 
 class StudentSignupSerializer(serializers.ModelSerializer):
     user = CustomUserSerializer()
@@ -14,11 +15,7 @@ class StudentSignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        password = validated_data.pop('password')
-        password2 = validated_data.pop('password2')
-
-        if password != password2:
-            raise serializers.ValidationError("Passwords do not match")
+        password = Signup.match_passwords(self, validated_data)
         
         user_data['password'] = password
         user_data['is_active'] = False
@@ -27,6 +24,7 @@ class StudentSignupSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create_user(**user_data)
         student = Student.objects.create(user=user, **validated_data)
         return student
+    
     
 class StudentSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='user.id')

@@ -26,57 +26,63 @@ class EnrollmentListView(APIView):
             return paginator.get_paginated_response(serializer.data)
         return Response({'message': 'it might be you are not a user of type student.'})
         
+        
+def check_active_course_for_enroll(self, course_name):
+    course_name = str(course_name[0])
+    course = get_object_or_404(Course, name=course_name)
+    if not course.is_active:
+        return None
+    if course.start_date <= datetime.date.today():
+        return None
+    return course
 
 class EnrollCourseView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         user = request.user
-        if user.user_type == 'student':
-            student = user.student
-            data = request.data.copy()
-            data['student'] = student
+        if user.user_type != 'student':
+            return Response({'message': 'it might be you are not a user of type student.'})
+        student = user.student
+        data = request.data.copy()
+        data['student'] = student
 
-            course_name = data.pop('course_name')
-            course_name = str(course_name[0])
-            course = get_object_or_404(Course, name=course_name)
-            
-            if course.is_active:
-                if course.start_date > datetime.date.today():
-                    data['course'] = course.id
-
-                    serializer = NewEnrollSerializer(data = data)
-                    if serializer.is_valid():
-                        serializer.save()
-                        return Response(serializer.data, status=status.HTTP_201_CREATED)
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                return Response({'message': 'You can not Enroll the Course after the course start date.'})
-            return Response({'message': 'This course has not yet been activated by the administrator, so enrollment is currently unavailable.'})  
-        return Response({'message': 'it might be you are not a user of type student.'})
+        course_name = data.pop('course_name')
+        course = check_active_course_for_enroll(self, course_name)
+        if course is None:
+            return Response({'message': 'Course is not available for enrollment.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data['course'] = course.id
+        serializer = NewEnrollSerializer(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class LeaveCourseView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         user = request.user
-        if user.user_type == 'student':
-            student = user.student
-            data = request.data.copy()
-            data['student'] = student
+        if user.user_type != 'student':
+            return Response({'message': 'it might be you are not a user of type student.'})
+        student = user.student
+        data = request.data.copy()
+        data['student'] = student
 
-            course_name = data.pop('course_name')
-            course_name = str(course_name[0])
-            course = get_object_or_404(Course, name=course_name)
-            
-            try:
-                enrollment = Enrollment.objects.get(student=student, course=course)
-            except Enrollment.DoesNotExist:
-                return Response({'error': 'You are not enrolled in this course'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            if course.start_date > datetime.date.today():
-                data['course'] = course.id
-
-                enrollment.delete()
-                return Response({'message': 'You have successfully left the course'}, status=status.HTTP_200_OK)
-            return Response({'message': 'You can not Leave the Course after the course start date.'})
-        return Response({'message': 'it might be you are not a user of type student.'})
+        course_name = data.pop('course_name')
+        course = check_active_course_for_enroll(self, course_name)
+        if course is None:
+            return Response({'message': 'Course is not available for Leaving.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data['course'] = course.id
+        
+        try:
+            enrollment = Enrollment.objects.get(student=student, course=course)
+        except Enrollment.DoesNotExist:
+            return Response({'error': 'You are not enrolled in this course'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        enrollment.delete()
+        return Response({'message': 'You have successfully left the course'}, status=status.HTTP_200_OK)
+        

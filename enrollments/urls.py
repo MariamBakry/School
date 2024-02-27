@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.EnrollmentListView.as_view(), name='student_enrollments'),
-    path('newenroll/', views.EnrollCourseView.as_view(), name='enroll_course'),
-    path('leavecourse/', views.LeaveCourseView.as_view(), name='leave_course'),
+    path('new-enroll/', views.EnrollCourseView.as_view(), name='enroll_course'),
+    path('leave-course/', views.LeaveCourseView.as_view(), name='leave_course'),
 ]
