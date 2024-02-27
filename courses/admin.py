@@ -5,6 +5,7 @@ from teachers.models import Teacher
 """ Check if the teacher is already assigned to a course within
     the same time frame """
 class CourseAdmin(admin.ModelAdmin):
+    search_fields = ['name', 'teacher__user__username']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         active_teacher = Teacher.objects.exclude(user__is_active=False)
