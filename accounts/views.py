@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from .models import *
 from .serializers import *
-from rest_framework import generics, permissions
+from rest_framework import generics
 
 class LoginView(APIView):
     def post(self, request):
@@ -36,7 +36,7 @@ class LogoutView(APIView):
         return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
 
     
-class RetrieveUserProfileView(generics.RetrieveAPIView):
+class UserProfileView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CustomUserSerializer
 

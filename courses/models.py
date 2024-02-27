@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from teachers.models import Teacher
 from django.core.exceptions import ValidationError
-from datetime import date
 
 # Create your models here.
 
