@@ -27,3 +27,11 @@ class StudentSignupSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create_user(**user_data)
         student = Student.objects.create(user=user, **validated_data)
         return student
+    
+class StudentSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='user.id')
+    username = serializers.CharField(source='user.username')
+
+    class Meta:
+        model = Student
+        fields = ['id', 'username']
