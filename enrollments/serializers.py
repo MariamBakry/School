@@ -10,7 +10,6 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
 
 class NewEnrollSerializer(serializers.ModelSerializer):
-    # course_name = serializers.CharField(source='course.name', read_only = True)
 
     class Meta:
         model = Enrollment

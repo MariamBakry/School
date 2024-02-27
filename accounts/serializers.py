@@ -9,6 +9,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
         }
 
+    """
+        fields on the UpdateProfileSerializer are the only
+        allowed fields to be updated by the user himself
+    """
 class UpdateProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser

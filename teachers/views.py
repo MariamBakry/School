@@ -13,6 +13,12 @@ from school.pagination import CustomCursorPagination
 
 class TeacherSignupView(APIView):
     def post(self, request):
+        """
+            Creates a new user account of type student.
+
+            Returns:
+                A Response object with the new user's data.
+        """
         serializer = TeacherSignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -20,6 +26,27 @@ class TeacherSignupView(APIView):
         return Response(serializer.errors)
     
 class StudentsEnrollMyCourseView(APIView):
+    """
+    API view for teachers to retrieve a paginated list of students enrolled in their course.
+
+    Requires user authentication using the `IsAuthenticated` permission class.
+    Uses custom pagination implemented in `CustomCursorPagination`.
+
+    **GET:**
+        - Fetches the authenticated user.
+        - Checks if the user is of type 'teacher'.
+        - Retrieves the teacher object if the user is a teacher.
+        - Gets the course object based on the provided ID.
+        - Verifies if the retrieved course belongs to the current teacher.
+        - If the course is valid:
+            - Retrieves enrolled students in the course.
+            - Extracts student user primary keys from the enrollments.
+            - Fetches all users corresponding to those primary keys.
+            - Paginates the results using the specified paginator class.
+            - Serializes the paginated students using `CustomUserSerializer`.
+            - Returns a paginated response containing the enrolled students.
+        - Returns an error response if the user is not the course teacher.
+    """
     permission_classes = [IsAuthenticated]
     pagination_class = CustomCursorPagination
 
@@ -42,6 +69,20 @@ class StudentsEnrollMyCourseView(APIView):
         return Response({'message': 'it might be you are not a user of type teacher.'})
 
 class CoursesHistoryListView(APIView):
+    """
+    API view for teachers to retrieve a list of their courses history.
+
+    Requires user authentication using the `IsAuthenticated` permission class.
+
+    **GET:**
+        - Fetches the authenticated user.
+        - Checks if the user is of type 'teacher'.
+        - Retrieves the teacher object if the user is a teacher.
+        - Retrieves all courses taught by the teacher (active and not active courses).
+        - Serializes the retrieved courses using `CourseSerializer`.
+        - Returns the serialized course data.
+        - Returns an error response if the user is not a teacher.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

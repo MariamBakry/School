@@ -6,6 +6,12 @@ from django.core.exceptions import ValidationError
 # Create your models here.
 
 def validate_end_date_greater_than_start_date(value):
+    """
+    Raises a validation error if the end date is less than or equal to the start date.
+
+    Raises:
+        ValidationError: If the end date is less than or equal to the start date.
+    """
     if value.end_date <= value.start_date:
         raise ValidationError('End date must be greater than the start date.')
 
@@ -22,6 +28,15 @@ class Course(models.Model):
         return self.name
 
     def clean(self):
+        """
+        Cleans the data and performs additional validation.
+
+        1. Calls `validate_end_date_greater_than_start_date` to ensure the end date is after the start date of the course.
+        2. Calls the parent class's `clean` method for further validation (if any).
+
+        Returns:
+            The cleaned data or raises a ValidationError.
+        """
         validate_end_date_greater_than_start_date(self)
         return super().clean()
     

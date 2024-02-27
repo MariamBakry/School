@@ -5,6 +5,17 @@ from accounts.serializers import CustomUserSerializer
 from accounts.views import Signup
 
 class TeacherSignupSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating a new teacher user.
+
+    This serializer nests a `CustomUserSerializer` and two password fields.
+    It validates the passwords match and creates a new `CustomUser` and `Teacher` object.
+
+    **Fields:**
+        user: (Nested `CustomUserSerializer`) User data for the new teacher.
+        password: (CharField, write_only) Password for the new user.
+        password2: (CharField, write_only) Confirmation password for the new user.
+    """
     user = CustomUserSerializer()
     password = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)

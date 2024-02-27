@@ -9,6 +9,12 @@ from .serializers import *
 from rest_framework import generics
 
 class LoginView(APIView):
+    """
+        Logs in a user and returns refresh and access tokens.
+
+        Returns:
+            A Response object with the tokens or an error message.
+    """
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -31,12 +37,24 @@ class LoginView(APIView):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     
 class LogoutView(APIView):
+    """
+        Logs out the current user.
+
+        Returns:
+            A Response object with a success message.
+    """
     def post(self, request):
         logout(request)
         return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
 
     
 class UserProfileView(generics.RetrieveAPIView):
+    """
+    Retrieves the current user's profile.
+
+    Returns:
+        A Response object with the user's profile data.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = CustomUserSerializer
 
@@ -44,6 +62,12 @@ class UserProfileView(generics.RetrieveAPIView):
         return self.request.user
     
 class UpdateUserProfileView(generics.UpdateAPIView):
+    """
+        Updates the current user's profile.
+
+        Returns:
+            A Response object with the updated user's profile data.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = UpdateProfileSerializer
 
@@ -52,6 +76,15 @@ class UpdateUserProfileView(generics.UpdateAPIView):
     
 class Signup(APIView):
     def match_passwords(self,validated_data):
+        """
+            Validates that the two password fields match.
+
+            Raises:
+                ValidationError: If the passwords do not match.
+
+            Returns:
+                The password to the SignupView in teacher or student serializers.
+        """
         password = validated_data.pop('password')
         password2 = validated_data.pop('password2')
 

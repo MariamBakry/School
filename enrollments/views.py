@@ -11,6 +11,21 @@ from school.pagination import CustomCursorPagination
 # Create your views here.
 
 class EnrollmentListView(APIView):
+    """
+    API view for retrieving a paginated list of a student's enrollments.
+
+    Requires user authentication using the `IsAuthenticated` permission class.
+    Uses custom pagination implemented in `CustomCursorPagination`.
+
+    **GET:**
+        - Fetches the authenticated user.
+        - Checks if the user is of type 'student'.
+        - If the user is a student, retrieves their enrollments.
+        - Paginates the results using the specified paginator class.
+        - Serializes the paginated data using `EnrollmentSerializer`.
+        - Returns a paginated response object containing the enrollments,
+          or an error message if the user is not a student.
+    """
     permission_classes = [IsAuthenticated]
     pagination_class = CustomCursorPagination
 
@@ -26,8 +41,14 @@ class EnrollmentListView(APIView):
             return paginator.get_paginated_response(serializer.data)
         return Response({'message': 'it might be you are not a user of type student.'})
         
-        
+
 def check_active_course_for_enroll(self, course_name):
+    """
+    Checks if a course is available for enrollment based on its status and start date.
+
+    Returns:
+        The course object if it's active and has a future start date, otherwise None.
+    """
     course_name = str(course_name[0])
     course = get_object_or_404(Course, name=course_name)
     if not course.is_active:
@@ -37,6 +58,21 @@ def check_active_course_for_enroll(self, course_name):
     return course
 
 class EnrollCourseView(APIView):
+    """
+    API view for enrolling students in courses.
+
+    Requires user authentication using the `IsAuthenticated` permission class.
+
+    **POST:**
+        - Fetches the authenticated user.
+        - Checks if the user is of type 'student'.
+        - Retrieves the student object.
+        - Extracts the course name from the request data.
+        - Calls `check_active_course_for_enroll` to ensure the course is valid.
+        - If the course is valid, sets the course ID in the data and serializes.
+        - Saves the enrollment on successful validation and returns a created response.
+        - Returns a bad request response if enrollment validation fails.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -61,6 +97,21 @@ class EnrollCourseView(APIView):
         
 
 class LeaveCourseView(APIView):
+    """
+    API view for leaving students a courses.
+
+    Requires user authentication using the `IsAuthenticated` permission class.
+
+    **POST:**
+        - Fetches the authenticated user.
+        - Checks if the user is of type 'student'.
+        - Retrieves the student object.
+        - Extracts the course name from the request data.
+        - Calls `check_active_course_for_enroll` to ensure the course is valid.
+        - If the course is valid, sets the course ID in the data and serializes.
+        - Saves the enrollment on successful validation and returns a success leaving response.
+        - Returns a bad request response if enrollment validation fails.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
