@@ -5,7 +5,7 @@ This document provides instructions for running the project locally, using the i
 
 __1.__ Setting Up the Development Environment:
 
-    **1.1.** Activating the Virtual Environment:
+    __1.1.__ Activating the Virtual Environment:
     Open a terminal window.
     Navigate to the root directory of your project using the cd command.
     Create new virtual environment using the following command:
