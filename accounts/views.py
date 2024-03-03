@@ -43,6 +43,9 @@ class LogoutView(APIView):
         Returns:
             A Response object with a success message.
     """
+    
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         logout(request)
         return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
