@@ -3,7 +3,7 @@
 
 This document provides instructions for running the project locally, using the implemented APIs in Postman, and creating a superuser account.
 
-**1.** Setting Up the Development Environment:
+__1.__ Setting Up the Development Environment:
 
     **1.1.** Activating the Virtual Environment:
     Open a terminal window.
