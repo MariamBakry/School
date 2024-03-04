@@ -3,11 +3,6 @@ from .models import Student
 from django.http import HttpResponse
 import csv
 from django import forms
-from django.urls import path
-from django.shortcuts import render
-from .serializers import StudentSerializer
-from rest_framework.response import Response
-
 
 class StudentImportForm(forms.Form):
     file = forms.FileField()
