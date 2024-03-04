@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from .models import *
 from .serializers import *
 from rest_framework import generics
+from django.core.mail import send_mail
+from django.conf import settings
 
 class LoginView(APIView):
     """
@@ -94,3 +96,26 @@ class Signup(APIView):
         if password != password2:
             raise serializers.ValidationError("Passwords do not match")
         return password
+    
+
+class AdminActiveUserEmail:
+    def index(username, email):
+
+        message = f"""Hello Admin,
+        \nA new user has signed up on the platform:
+        \nName: {username}
+        \nEmail: {email}
+        \nPlease review the user's information and activate their account if they meet the criteria.
+        \nYou can access the admin panel to review and activate the user account or use this command:
+        \npython manage.py activate_users username
+        \nThank you,
+        \nSchool Management App Team"""
+
+        email = 'mariambakry55@gmail.com'
+        send_mail(
+            'New User Signup - Activation Required', #title
+            message,
+            'settings.EMAIL_HOST_USER',
+            [email],
+            fail_silently = False
+        )

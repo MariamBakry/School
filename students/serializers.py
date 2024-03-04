@@ -3,6 +3,7 @@ from .models import Student
 from accounts.models import CustomUser
 from accounts.serializers import CustomUserSerializer
 from accounts.views import Signup
+from accounts.views import AdminActiveUserEmail
 
 class StudentSignupSerializer(serializers.ModelSerializer):
     """
@@ -26,6 +27,9 @@ class StudentSignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
+        username = user_data['username']
+        email = user_data['email']
+
         password = Signup.match_passwords(self, validated_data)
         
         user_data['password'] = password
@@ -34,6 +38,8 @@ class StudentSignupSerializer(serializers.ModelSerializer):
 
         user = CustomUser.objects.create_user(**user_data)
         student = Student.objects.create(user=user, **validated_data)
+
+        AdminActiveUserEmail.index(username, email)
         return student
     
     
